@@ -1,41 +1,49 @@
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
-from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+from django.contrib.auth import authenticate, login, logout
 from .models import CustomUser
-
-
-def home(request):
-    return HttpResponse("<h1>Welcome to the home page!</h1>")
 
 
 # Create your views here.
 def signup(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            dateofbirth = form.cleaned_data.get('dateofbirth')
+        username = request.POST.get('username')
+        password = request.POST.get('password1')
+        email = request.POST.get('email')
+        dateofbirth = request.POST.get('dob')
+
+        if not User.objects.filter(username=username).exists():
+            user = User.objects.create(username=username, password=password, email=email)
             CustomUser.objects.create(user=user, dateofbirth=dateofbirth)
-            return render(request, 'accounts/signup.html')
+        else:
+            messages.error(request, 'Username already exists, please go to login page')
 
-    else:
-        form = CustomUserCreationForm()
+        return render(request, 'accounts/signup.html')
 
-    return render(request, 'accounts/signup.html', {'form': form})
+    return render(request, 'accounts/signup.html')
 
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if not User.objects.filter(username=username).exists():
+            messages.error(request, 'Username does not exist')
+            return redirect('/accounts/login')
+
+        user = authenticate(request, username=username, password=password)
+        if user:
             login(request, user)
-            return redirect('home')  # Redirect to a home page or dashboard
-    else:
-        form = AuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password')
+            return render(request, 'accounts/login.html')
+    return render(request, 'accounts/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')

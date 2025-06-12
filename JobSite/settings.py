@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'jobs',
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'  # or 'bootstrap5'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -17,9 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from accounts.views import *
+from jobs.views import *
+from bookmarks.views import *
+
 urlpatterns = [
         path('admin/', admin.site.urls),
-        path('signup/', signup, name='signup'),
+        path('register/', signup, name='signup'),
         path('login/', login_view, name='login'),
-        path('', home, name='home')
+        path('logout/', logout_view, name='logout'),
+        path('', job_list, name='home'),
+        path('my_bookmarks/<', user_bookmarks, name='user_bookmarks'),
+        path('job_detail/<slug:slug>/', job_detail, name='job_detail'),
 ]
