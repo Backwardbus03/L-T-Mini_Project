@@ -50,7 +50,7 @@
                     {% if user.is_authenticated %}
                         <button onclick="toggleBookmark({{ job.id }})" 
                                 id="bookmark-btn-{{ job.id }}"
-                                class="p-3 text-gray-400 transition duration-300 border border-gray-300 rounded-lg "> likejob
+                                class="p-3 text-gray-400 transition duration-300 border border-gray-300 rounded-lg ">
                             <i class="fas fa-heart text-2xl {% if is_bookmarked %}text-red-500{% endif %}"></i>
                         </button>
                     {% endif %}

@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .models import CustomUser
+from .models import *
 
 
 # Create your views here.
@@ -47,3 +47,27 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+@login_required
+def build_profile(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        bio = request.POST.get('bio')
+        
+
+        UserProfile.objects.create(
+            user=request.user,
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            email=email,
+            bio=bio
+        )
+        
+        return redirect('')
+
+    return render(request, 'accounts/profile.html')

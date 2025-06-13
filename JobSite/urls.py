@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
+from . import settings
 from accounts.views import *
 from jobs.views import *
 from bookmarks.views import *
@@ -29,4 +31,6 @@ urlpatterns = [
         path('my_bookmarks/', user_bookmarks, name='user_bookmarks'),
         path('job_detail/<slug:slug>/', job_detail, name='job_detail'),
         path('bookmark/<int:job_id>/', toggle_bookmark, name='toggle_bookmark'),
-]
+        path('update_profile/', build_profile, name='update_profile'),
+        
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
