@@ -6,6 +6,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .models import *
+# app/views.py
+# from django.shortcuts import render, redirect
+# from django.contrib.auth.decorators import login_required
+from .forms import UserProfileForm
+from .models import UserProfile
 
 
 # Create your views here.
@@ -71,3 +76,30 @@ def build_profile(request):
         return redirect('')
 
     return render(request, 'accounts/profile.html')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import UserProfileForm
+from .models import UserProfile
+
+@login_required
+def profile_view(request):
+    # Get the user's existing profile
+    try:
+        profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect('update_profile')
+        else:
+            messages.error(request, "There was an error updating your profile.")
+    else:
+        form = UserProfileForm(instance=profile)
+
+    return render(request, 'accounts/profile.html', {'form': form, 'profile': profile})
