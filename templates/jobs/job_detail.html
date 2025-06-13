@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     {% if user.is_authenticated %}
-                        <button onclick="toggleBookmark({{ job.id }})" 
+                        <button onclick="toggleBookmark('{{ job.id }}')" 
                                 id="bookmark-btn-{{ job.id }}"
                                 class="p-3 text-gray-400 transition duration-300 border border-gray-300 rounded-lg ">
                             <i class="fas fa-heart text-2xl {% if is_bookmarked %}text-red-500{% endif %}"></i>
@@ -136,7 +136,7 @@
                         </button>
                         
                         {% if user.is_authenticated %}
-                            <button onclick="toggleBookmark({{ job.id }})"
+                            <button onclick="toggleBookmark('{{ job.id }}')"
                                     id="bookmark-btn-sidebar-{{ job.id }}"
                                     class="bookmark-btn w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition duration-300 font-medium">
                                 <i class="fas fa-heart mr-2 {% if is_bookmarked %}text-red-500{% endif %}"></i>
@@ -191,57 +191,6 @@
     </div>
 </div>
 
-{#<script>#}
-{#    function toggleBookmark(jobId) {#}
-        {#dil = document.getElementsByClassName("bookmark-btn");#}
-{#        dil = document.querySelectorAll('.bookmark-btn')#}
-{##}
-{##}
-{#        dil.addEventListener('click', () => {#}
-{#            dil.style.backgroundColor="red"#}
-{#        })#}
-{#        fetch(`/bookmark/${jobId}/`, {#}
-{#            method: 'POST',#}
-{#            headers: {#}
-{#                'X-CSRFToken': csrftoken,#}
-{#                'X-Requested-With': 'XMLHttpRequest',#}
-{#                'Content-Type': 'application/json',#}
-{#            },#}
-{#        })#}
-{#        .then(response => response.json())#}
-{#        .then(data => {#}
-{#            // Update main bookmark button#}
-{#            const mainBtn = document.getElementById(`bookmark-btn-${jobId}`);#}
-{#            const mainIcon = mainBtn.querySelector('i');#}
-{#            #}
-{#            // Update sidebar bookmark button#}
-{#            const sidebarBtn = document.getElementById(`bookmark-btn-sidebar-${jobId}`);#}
-{#            const sidebarIcon = sidebarBtn ? sidebarBtn.querySelector('i') : null;#}
-{#            const sidebarText = sidebarBtn ? sidebarBtn.childNodes[2] : null;#}
-{#            #}
-{#            if (data.bookmarked) {#}
-{#                mainIcon.className = 'fas fa-heart text-2xl text-red-500';#}
-{#                mainIcon.classList.add('text-red-500');#}
-{#                mainBtn.classList.add('bg-red-100', 'border-red-300');#}
-{##}
-{#                if (sidebarIcon) {#}
-{#                    sidebarIcon.className = 'fas fa-heart mr-2 text-red-500';#}
-{#                    sidebarText.textContent = 'Remove from Bookmarks';#}
-{#                }#}
-{#            } else {#}
-{#                mainIcon.className = 'fas fa-heart text-2xl';#}
-{#                mainIcon.classList.remove('text-red-500');#}
-{#                mainBtn.classList.remove('bg-red-100', 'border-red-300');#}
-{##}
-{#                if (sidebarIcon) {#}
-{#                    sidebarIcon.className = 'fas fa-heart mr-2';#}
-{#                    sidebarText.textContent = 'Save to Bookmarks';#}
-{#                }#}
-{#            }#}
-{#        })#}
-{#        .catch(error => console.error('Error:', error));#}
-{#    }#}
-{#</script>#}
 
     <script>
     function toggleBookmark(jobId) {
