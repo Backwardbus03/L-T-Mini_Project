@@ -51,10 +51,6 @@ def job_list(request):
 def job_detail(request, slug):
     job = get_object_or_404(Job, slug=slug, is_active=True)
 
-    # Increment view count
-    job.views_count += 1
-    job.save(update_fields=['views_count'])
-
     # Check if user has bookmarked this job
     is_bookmarked = False
     if request.user.is_authenticated:

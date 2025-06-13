@@ -12,13 +12,15 @@
         body {
             background-color: #f0f2f5;
         }
+
         .login-container {
             margin-top: 100px;
         }
+
         .login-card {
             padding: 2rem;
             border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -30,17 +32,30 @@
             <div class="card login-card">
                 <h3 class="text-center mb-4">Login</h3>
                 <form method="POST" action="/login/">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} text-white bg-danger alert-dismissible fade show fw-bold shadow-lg border-3 border-dark py-3 px-4 my-3"
+                                 role="alert">
+                                {#            <i class="bi bi-exclamation-triangle-fill me-2"></i>#}
+                                {{ message }}
+                                {#            <button type="button" data-bs-dismiss="alert" aria-label="Close"></button>#}
+                            </div>
+
+                        {% endfor %}
+                    {% endif %}
                     <!-- For Django CSRF token (optional) -->
                     {% csrf_token %}
 
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" name="username" id="username" class="form-control" required placeholder="Enter your username">
+                        <input type="text" name="username" id="username" class="form-control" required
+                               placeholder="Enter your username">
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" id="password" class="form-control" required placeholder="Enter your password">
+                        <input type="password" name="password" id="password" class="form-control" required
+                               placeholder="Enter your password">
                     </div>
 
                     <div class="d-grid">

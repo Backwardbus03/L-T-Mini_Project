@@ -1,3 +1,4 @@
+import time
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -18,10 +19,9 @@ def signup(request):
         if not User.objects.filter(username=username).exists():
             user = User.objects.create(username=username, password=password, email=email)
             CustomUser.objects.create(user=user, dateofbirth=dateofbirth)
+            return redirect('login')
         else:
             messages.error(request, 'Username already exists, please go to login page')
-
-        return render(request, 'accounts/signup.html')
 
     return render(request, 'accounts/signup.html')
 
@@ -36,12 +36,12 @@ def login_view(request):
             return redirect('/accounts/login')
 
         user = authenticate(request, username=username, password=password)
-        if user:
+        if user is not None:
             login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'Invalid username or password')
-            return render(request, 'accounts/login.html')
+
     return render(request, 'accounts/login.html')
 
 def logout_view(request):
