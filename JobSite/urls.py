@@ -31,8 +31,9 @@ urlpatterns = [
         path('my_bookmarks/', user_bookmarks, name='user_bookmarks'),
         path('job_detail/<slug:slug>/', job_detail, name='job_detail'),
         path('bookmark/<int:job_id>/', toggle_bookmark, name='toggle_bookmark'),
-        path('update_profile/', build_profile, name='update_profile'),
-        
+        path('profile/', profile_view, name='profile_view'),
+        path('profile/edit/', profile_edit, name='profile_edit'),
+        path('apply/', apply_job, name='apply_job'),
 ]
 
 

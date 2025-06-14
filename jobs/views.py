@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from .models import *
 from django.core.paginator import Paginator
@@ -68,3 +69,6 @@ def job_detail(request, slug):
         'related_jobs': related_jobs,
     }
     return render(request, 'jobs/job_detail.html', context)
+
+def apply_job(request):
+    return render(request, 'jobs/apply_job.html')

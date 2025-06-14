@@ -1,15 +1,13 @@
 import time
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .models import *
-# app/views.py
-# from django.shortcuts import render, redirect
-# from django.contrib.auth.decorators import login_required
+
 from .forms import UserProfileForm
+from .models import *
 from .models import UserProfile
 
 
@@ -55,51 +53,47 @@ def logout_view(request):
 
 
 @login_required
-def build_profile(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
-        bio = request.POST.get('bio')
-        
-
-        UserProfile.objects.create(
-            user=request.user,
-            first_name=first_name,
-            last_name=last_name,
-            phone=phone,
-            email=email,
-            bio=bio
-        )
-        
-        return redirect('')
-
-    return render(request, 'accounts/profile.html')
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .forms import UserProfileForm
-from .models import UserProfile
-
-@login_required
-def profile_view(request):
-    # Get the user's existing profile
+def profile_edit(request):
+    """View to edit user profile"""
     try:
-        profile = UserProfile.objects.get(user=request.user)
+        profile = request.user.userprofile
     except UserProfile.DoesNotExist:
-        profile = UserProfile.objects.create(user=request.user)
+        profile = UserProfile(user=request.user)
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, "Profile updated successfully.")
-            return redirect('update_profile')
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile_view')
         else:
-            messages.error(request, "There was an error updating your profile.")
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = UserProfileForm(instance=profile)
 
-    return render(request, 'accounts/profile.html', {'form': form, 'profile': profile})
+    context = {
+        'form': form,
+        'profile': profile
+    }
+    return render(request, 'accounts/profile_edit.html', context)
+
+
+@login_required
+def profile_view(request):
+    """View to display user profile"""
+    try:
+        profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        messages.info(request, 'Please complete your profile first.')
+        return redirect('profile_edit')
+
+    # Convert skills string to list for better display
+    skills_list = []
+    if profile.skills:
+        skills_list = [skill.strip() for skill in profile.skills.split(',') if skill.strip()]
+
+    context = {
+        'profile': profile,
+        'skills_list': skills_list
+    }
+    return render(request, 'accounts/profile_view.html', context)

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 from django.db import models
@@ -76,3 +77,32 @@ class Job(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+class ApplyForJob(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applied')
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='applied')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'job')
+        verbose_name = "Job application"
+        verbose_name_plural = "Job applications"
+
+    def __str__(self):
+        return f"{self.user.username} applied for {self.job.title}"
+
+    @staticmethod
+    def is_applied(user, job):
+        """
+        Helper method to check if a job is bookmarked by a user.
+        Returns True or False.
+        """
+        return ApplyForJob.objects.filter(user=user, job=job).exists()
+
+    @staticmethod
+    def get_applied_job_ids(user):
+        """
+        Returns a list of job IDs bookmarked by the user.
+        Useful for displaying icons in the template.
+        """
+        return ApplyForJob.objects.filter(user=user).values_list('job_id', flat=True)
